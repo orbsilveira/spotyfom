@@ -17,5 +17,5 @@ void insere(struct desc_lista_encadeada *minhaLista, struct nodo *novo_elemento,
 int tamanho(struct desc_lista_encadeada *minhaLista);
 void libera(struct desc_lista_encadeada *minhaLista);
 void imprime(struct desc_lista_encadeada *minhaLista);
-struct nodo * get(struct desc_lista_encadeada *minhaLista, int posicao);
+struct nodo* get(struct desc_lista_encadeada *minhaLista, int posicao);
 void set(struct desc_lista_encadeada *minhaLista, int valor, int posicao);

@@ -17,16 +17,64 @@ int main() {
     int quantidade_musicas;
 	int op = 0;
 	
-	do {
+	do {	
+			if (acervo == NULL)
+			{
+				acervo = CriaDescritorLSE();
+				char name[20];
+				printf("              ######### Carregar banco de dados #########\n");
+				printf("Digitar nome do arquivo com extensao (arquivo.txt) ou digitar 's' para sair: ");
+				scanf("%s", name);
+
+				if (strcmp(name, "s") == 0)
+				{
+					return 1;
+				}
+
+				arquivo = fopen(name, "r");
+    			if (arquivo == NULL) {
+    				perror("Erro ao abrir o arquivo");
+    				return 1;
+    			}
+
+    			if (fgets(linha, sizeof(linha), arquivo) != NULL) {
+        			quantidade_musicas = atoi(linha);
+        			printf("Quantidade total de músicas informada no arquivo: %d\n", quantidade_musicas);
+    			} else {
+        			fprintf(stderr, "Erro ao ler a quantidade de músicas do arquivo.\n");
+        			fclose(arquivo);
+    				return 1;
+    			}
+
+				int musicas_lidas = 0;
+				int posicao = 0;
+				while (fgets(linha, sizeof(linha), arquivo) != NULL) {
+        			struct musica nova_musica; // Cria uma struct temporária para preencher
+
+        			if (parse_linha_para_musica(linha, &nova_musica) == 0) {
+						struct musica *m = malloc(sizeof(struct musica));
+						*m = nova_musica;
+						novonodo = CriaNodoLSE(m);
+						insere(acervo, novonodo, posicao);
+            			//printf("Música processada: %s - %s\n", nova_musica.titulo, nova_musica.artista);
+            			musicas_lidas++;
+						posicao ++;
+        			} else {
+            			fprintf(stderr, "Skipping malformed line: %s\n", linha);
+        			}
+    			}
+				printf("\nTotal de músicas lidas e processadas: %d\n", musicas_lidas);
+			}
+			
 			printf("\n\n========== MENU SPOTYFOM ==========\n");
 			printf(" [0] Sair;\n");
-			printf(" [1] Carregar banco de dados (musicas.txt);\n");
-			printf(" [2] Cria descritor acervo;\n");
-			printf(" [3] ;\n");
-			printf(" [4] ;\n");
-			printf(" [5] ;\n");
-			printf(" [6] ;\n");
-			printf(" [7] ;\n");
+			printf(" [1] Execucao;\n");
+			printf(" [2] Selecionar Playlist;\n");
+			printf(" [3] Busca;\n");
+			printf(" [4] Impressao;\n");
+			printf(" [5] Relatorio;\n");
+			printf(" [6] Verificar tamanho do acervo;\n");
+			printf(" [7] Free no acervo;\n");
 			printf("===========================================\n");
 		
 			printf(" Selecao: ");
@@ -41,51 +89,37 @@ int main() {
 				switch (op)
 				{
 					case 1:
-						    arquivo = fopen("musicas.txt", "r"); // Substitua "musicas.txt" pelo nome do seu arquivo
-
-    						if (arquivo == NULL) {
-        						perror("Erro ao abrir o arquivo");
-        						return 1;
-    						}
-
-    						if (fgets(linha, sizeof(linha), arquivo) != NULL) {
-        						quantidade_musicas = atoi(linha);
-        						printf("Quantidade total de músicas informada no arquivo: %d\n", quantidade_musicas);
-    						} else {
-        						fprintf(stderr, "Erro ao ler a quantidade de músicas do arquivo.\n");
-        						fclose(arquivo);
-    							return 1;
-    						}
-
-							int musicas_lidas = 0;
-							int posicao = 0;
-							while (fgets(linha, sizeof(linha), arquivo) != NULL) {
-        						struct musica nova_musica; // Cria uma struct temporária para preencher
-
-        						if (parse_linha_para_musica(linha, &nova_musica) == 0) {
-									novonodo = CriaNodoLSE(&nova_musica);
-									insere(acervo, novonodo, posicao);
-            						printf("Música processada: %s - %s\n", nova_musica.titulo, nova_musica.artista);
-            						musicas_lidas++;
-									posicao ++;
-        						} else {
-            						fprintf(stderr, "Skipping malformed line: %s\n", linha);
-        						}
-    						}
-    						printf("\nTotal de músicas lidas e processadas: %d\n", musicas_lidas);
 						break;
 					case 2:
-							acervo = CriaDescritorLSE();
 						break;
 					case 3:
+						char selec;
+						printf("Busca por:\n [c] Codigo\n [t] Titulo\n [a] Artista\n Selecao: ");
+						scanf(" %c", &selec);
+
+						switch (selec)
+						{
+						case 'c':
+							printf("\nBusca por codigo.\n");
+							break;
+						case 't':
+							printf("\nBusca por titulo.\n");
+							break;
+						case 'a':
+							printf("\nBusca por artista.\n");
+							break;
+						}
+
 						break;
 					case 4:
 						break;
 					case 5:
 						break;
 					case 6:
+						printf("\n Tamanho do acervo: %d", tamanho(acervo));
 						break;
 					case 7:
+						libera(acervo);
 						break;
 				}
 			

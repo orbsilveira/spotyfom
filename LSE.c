@@ -89,7 +89,7 @@ int tamanho(struct desc_lista_encadeada *minhaLista){
 void libera(struct desc_lista_encadeada *minhaLista){
 	struct nodo *aux = minhaLista->lista;
 	struct nodo *corrente;
-	while(aux->prox != NULL){//percorre a lista de nodos liberando o nodos armazenado em corrente
+	while(aux != NULL){//percorre a lista de nodos liberando o nodos armazenado em corrente
 		corrente = aux;
 		aux = aux->prox;
 		free(corrente->info);
@@ -116,5 +116,5 @@ void imprime(struct desc_lista_encadeada *minhaLista){
 	printf("\n");
 }
 
-struct nodo * get(struct desc_lista_encadeada *minhaLista, int posicao){}
+struct nodo* get(struct desc_lista_encadeada *minhaLista, int posicao){}
 void set(struct desc_lista_encadeada *minhaLista, int valor, int posicao){}
