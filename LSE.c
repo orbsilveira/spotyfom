@@ -116,5 +116,20 @@ void imprime(struct desc_lista_encadeada *minhaLista){
 	printf("\n");
 }
 
-struct nodo* get(struct desc_lista_encadeada *minhaLista, int posicao){}
+struct nodo* get(struct desc_lista_encadeada *minhaLista, int posicao){
+	struct nodo *aux = minhaLista->lista;
+	int posicaoAux = 0;
+	while (aux != NULL)
+	{
+		if (posicao == posicaoAux)
+		{
+			return aux;
+		}
+		
+		posicaoAux ++;
+		aux = aux->prox;
+	}
+	
+}
+
 void set(struct desc_lista_encadeada *minhaLista, int valor, int posicao){}

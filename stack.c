@@ -121,7 +121,7 @@ void ImprimeMusicaStack(struct desc_stack *descritor, int posicao) {
 	}
 
 //imprime pilha de musicas
-void imprimePilha(struct desc_stack *descritor) {
+void ImprimeStack(struct desc_stack *descritor) {
 		for (int i = 0; i <= descritor->tamanho; i++)
 		{
 			ImprimeMusicaStack(descritor, i);
@@ -141,7 +141,7 @@ int EmptyStack(struct desc_stack *pilha) {
 }
 
 //retorno quantidade de itens na pilha
-int length(struct desc_stack *pilha) {
+int LengthStack(struct desc_stack *pilha) {
 	return pilha->tamanho;
 }
 

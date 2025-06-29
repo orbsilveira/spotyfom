@@ -6,7 +6,7 @@
 /*====================================================================*/
 
 //cria descritor
-struct desc_queue *criaDescritor(struct desc_queue *descritor) {
+struct desc_queue *CriaDescQueue(struct desc_queue *descritor) {
 		descritor = (struct desc_queue *) malloc(sizeof(struct desc_queue));
 		if (descritor == NULL)
 		{
@@ -52,7 +52,7 @@ struct musica *CriaElementoQueue(void) {
 	}
 
 //cria nodo
-struct nodo_queue *criaNodo(struct musica *novaMusica) {
+struct nodo_queue *CriaNodoQueue(struct musica *novaMusica) {
 		struct nodo_queue *novoNodo = (struct nodo_queue*) malloc(sizeof(struct nodo_queue));
 		if (novoNodo == NULL)
 		{
@@ -127,7 +127,7 @@ struct nodo_queue *dequeue(struct desc_queue *descritor) {
 	}
 
 //retorno de fila vazia
-int empty(struct desc_queue *queue) {
+int EmptyQueue(struct desc_queue *queue) {
 		if(queue->head == NULL)
 		{
 			return 1;
@@ -139,7 +139,7 @@ int empty(struct desc_queue *queue) {
 	}
 
 //retorna tamanho da fila
-int lenght(struct desc_queue *queue) {
+int LenghtQueue(struct desc_queue *queue) {
 		if (queue == NULL)
 		{
 			printf("\nFila nao criada!\n");
@@ -153,7 +153,7 @@ int lenght(struct desc_queue *queue) {
 	}
 
 //imprime musica
-void imprimeMusica(struct desc_queue *descritor, int posicao) {
+void ImprimeMusicaQueue(struct desc_queue *descritor, int posicao) {
 		int posicaoAux = 0;
 		if (posicao > descritor->tamanho)
 		{
@@ -182,7 +182,7 @@ void imprimeMusica(struct desc_queue *descritor, int posicao) {
 	}
 
 //imprime fila de musicas
-void showQueue(struct desc_queue *descritor) {
+void ShowQueue(struct desc_queue *descritor) {
 		if (descritor == NULL)
 		{
 			printf("\nFila não criada!");
@@ -191,7 +191,7 @@ void showQueue(struct desc_queue *descritor) {
 		{
 			for (int i = 0; i <= descritor->tamanho; i++)
 			{
-				imprimeMusica(descritor, i);
+				ImprimeMusicaQueue(descritor, i);
 			}
 		}
 	}

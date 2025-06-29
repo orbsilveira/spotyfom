@@ -11,7 +11,9 @@ int main() {
     FILE *arquivo;
 	struct musica *musica = NULL;
 	struct nodo *novonodo = NULL;
+	struct nodo_queue *nodoQueue = NULL;
 	struct desc_lista_encadeada *acervo = NULL;
+	struct desc_queue *fila = NULL;
     char linha[1024]; // Buffer para ler cada linha do arquivo
     int quantidade_musicas;
 	int op = 0;
@@ -68,7 +70,7 @@ int main() {
 		printf("\n\n========== MENU SPOTYFOM ==========\n");
 		printf(" [0] Sair;\n");
 		printf(" [1] Execucao;\n");
-		printf(" [2] Selecionar Playlist;\n");
+		printf(" [2] Playlist;\n");
 		printf(" [3] Busca;\n");
 		printf(" [4] Impressao;\n");
 		printf(" [5] Relatorio;\n");
@@ -89,6 +91,24 @@ int main() {
 			case 1:
 				break;
 			case 2:
+				char selecao;
+				printf("Criar playlist aleatoria [r] ou personalizada [p]? ");
+				scanf(" %c", &selecao);
+
+				switch (selecao) {
+				case 'r':
+					int aleatorio = (int)random() % 5001;
+					struct nodo *nodoAux;
+					fila = CriaDescQueue(fila);
+					nodoAux = get(acervo, aleatorio);
+					nodoQueue = CriaNodoQueue(nodoAux->info);
+					enqueue(fila, nodoQueue);
+					break;
+				case 'p':
+					
+					break;
+				}
+
 				break;
 			case 3:
 				struct musica *minhaMusica = NULL;
@@ -100,7 +120,22 @@ int main() {
 				printf("\n Execucoes: %d", minhaMusica->execucoes);
 				break;
 			case 4:
-				imprime(acervo);
+				int num;
+				printf("\nImprimir acervo [1]\nImprimir fila [2]\nImprimir pilha [3]\nSelecao: ");
+				scanf("%d", &num);
+				switch (num)
+				{
+				case 1:
+					imprime(acervo);
+					break;
+				case 2:
+					ShowQueue(fila);
+					break;
+				case 3:
+					
+					break;
+				}
+				
 				break;
 			case 5:
 				break;
