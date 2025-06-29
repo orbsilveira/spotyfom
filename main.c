@@ -7,6 +7,7 @@
 #include "musica.h"
 
 int parse_linha_para_musica(char *linha_do_arquivo, struct musica *musica_destino);
+struct musica *busca(struct desc_lista_encadeada *descritor);
 
 int main() {
     FILE *arquivo;
@@ -75,7 +76,7 @@ int main() {
 			printf(" [5] Relatorio;\n");
 			printf(" [6] Verificar tamanho do acervo;\n");
 			printf(" [7] Free no acervo;\n");
-			printf("===========================================\n");
+			printf("=======================================\n");
 		
 			printf(" Selecao: ");
 			scanf("%d", &op);
@@ -93,25 +94,16 @@ int main() {
 					case 2:
 						break;
 					case 3:
-						char selec;
-						printf("Busca por:\n [c] Codigo\n [t] Titulo\n [a] Artista\n Selecao: ");
-						scanf(" %c", &selec);
-
-						switch (selec)
-						{
-						case 'c':
-							printf("\nBusca por codigo.\n");
-							break;
-						case 't':
-							printf("\nBusca por titulo.\n");
-							break;
-						case 'a':
-							printf("\nBusca por artista.\n");
-							break;
-						}
-
+						struct musica *minhaMusica;
+						minhaMusica = busca(acervo);
+						printf("\n Titulo: %s", minhaMusica->titulo);
+						printf("\n Artista: %s", minhaMusica->artista);
+						printf("\n Letra: %s", minhaMusica->letra);
+						printf("\n Codigo: %d", minhaMusica->codigo);
+						printf("\n Execucoes: %d", minhaMusica->execucoes);
 						break;
 					case 4:
+						imprime(acervo);
 						break;
 					case 5:
 						break;
@@ -146,10 +138,20 @@ int parse_linha_para_musica(char *linha_do_arquivo, struct musica *musica_destin
 
     char *token;
 
-    // A ordem dos campos no arquivo é: codigo;execucoes;titulo;letra;artista
+    // A ordem dos campos no arquivo é: artista;codigo;titulo;letra;execucoes
 
-    // 1. Código (int)
+    // 1. Artista
     token = strtok(linha_copia, ";");
+    if (token == NULL) {
+        fprintf(stderr, "Erro de parsing.\n");
+        free(linha_copia);
+        return -1;
+    }
+	strncpy(musica_destino->artista, token, sizeof(musica_destino->artista) - 1);
+    musica_destino->artista[sizeof(musica_destino->artista) - 1] = '\0';
+
+    // 2. Código
+    token = strtok(NULL, ";");
     if (token == NULL) {
         fprintf(stderr, "Erro de parsing: Código não encontrado.\n");
         free(linha_copia);
@@ -157,16 +159,7 @@ int parse_linha_para_musica(char *linha_do_arquivo, struct musica *musica_destin
     }
     musica_destino->codigo = atoi(token);
 
-    // 2. Execuções (int)
-    token = strtok(NULL, ";");
-    if (token == NULL) {
-        fprintf(stderr, "Erro de parsing: Execuções não encontradas.\n");
-        free(linha_copia);
-        return -1;
-    }
-    musica_destino->execucoes = atoi(token);
-
-    // 3. Título (string)
+    // 3. Título
     token = strtok(NULL, ";");
     if (token == NULL) {
         fprintf(stderr, "Erro de parsing: Título não encontrado.\n");
@@ -177,7 +170,7 @@ int parse_linha_para_musica(char *linha_do_arquivo, struct musica *musica_destin
     strncpy(musica_destino->titulo, token, sizeof(musica_destino->titulo) - 1);
     musica_destino->titulo[sizeof(musica_destino->titulo) - 1] = '\0'; // Garante null-termination
 
-    // 4. Letra (string)
+    // 4. Letra
     token = strtok(NULL, ";");
     if (token == NULL) {
         fprintf(stderr, "Erro de parsing: Letra não encontrada.\n");
@@ -186,19 +179,68 @@ int parse_linha_para_musica(char *linha_do_arquivo, struct musica *musica_destin
     }
     strncpy(musica_destino->letra, token, sizeof(musica_destino->letra) - 1);
     musica_destino->letra[sizeof(musica_destino->letra) - 1] = '\0';
-
-    // 5. Artista (string)
-    token = strtok(NULL, ";");
-    if (token == NULL) {
-        fprintf(stderr, "Erro de parsing: Artista não encontrado.\n");
-        free(linha_copia);
-        return -1;
-    }
-    strncpy(musica_destino->artista, token, sizeof(musica_destino->artista) - 1);
-    musica_destino->artista[sizeof(musica_destino->artista) - 1] = '\0';
+	
+	// Execuções
+	musica_destino->execucoes = 0;
 
     // Libera a memória alocada para a cópia da linha
     free(linha_copia);
 
     return 0; // Sucesso
+}
+
+struct musica *busca(struct desc_lista_encadeada *descritor) {
+	char selec;
+	struct nodo *aux = descritor->lista;
+	printf("Busca por:\n [c] Codigo\n [t] Titulo\n [a] Artista\n Selecao: ");
+	scanf(" %c", &selec);
+
+	switch (selec)
+	{
+		case 'c':
+			int codigo;
+			printf("\nBusca por codigo.\n");
+			printf("Digitar codigo da musica: ");
+			scanf("%d", &codigo);
+
+			while (aux->prox != NULL)
+			{
+				if (codigo == aux->info->codigo)
+				{
+					return aux->info;
+				}
+				aux = aux->prox;
+			}
+			break;
+		case 't':
+			char titulo[256];
+			printf("\nBusca por titulo.\n");
+			printf("Digitar titulo da musica: ");
+			scanf("%s", titulo);
+
+			while (aux->prox != NULL)
+			{
+				if (strcasecmp(titulo, aux->info->titulo) == 0)
+				{
+					return aux->info;
+				}
+				aux = aux->prox;
+			}
+			break;
+		case 'a':
+			char artista[256];
+			printf("\nBusca por artista.\n");
+			printf("Digitar artista: ");
+			scanf("%s", artista);
+
+			while (aux->prox != NULL)
+			{
+				if (strcasecmp(artista, aux->info->artista) == 0)
+				{
+					return aux->info;
+				}
+				aux = aux->prox;
+			}
+			break;
+	}
 }
