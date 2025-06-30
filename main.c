@@ -14,8 +14,10 @@ int main() {
 	struct musica *musica = NULL;
 	struct nodo *novonodo = NULL;
 	struct nodo_queue *nodoQueue = NULL;
+	struct nodo_stack *nodoStack = NULL;
 	struct desc_lista_encadeada *acervo = NULL;
 	struct desc_queue *fila = NULL;
+	struct desc_stack *pilha = NULL;
     char linha[1024]; // Buffer para ler cada linha do arquivo
     int quantidade_musicas;
 	int op = 0;
@@ -78,7 +80,7 @@ int main() {
 		printf(" [5] Relatorio;\n");
 		printf(" [6] Verificar tamanho do acervo;\n");
 		printf(" [7] Free no acervo;\n");
-		printf("=======================================\n");
+		printf("==================================\n");
 		
 		printf(" Selecao: ");
 		scanf("%d", &op);
@@ -116,7 +118,21 @@ int main() {
 					}
 					break;
 				case 'p':
-					
+					int stop = 0;
+					struct musica *auxmusica;
+					do
+					{
+						if (pilha == NULL)
+						{
+							pilha = CriaDescStack(pilha);
+						}
+						auxmusica = busca(acervo);
+						nodoStack = CriaNodoStack(auxmusica);
+						push(pilha, nodoStack);
+
+						printf("\nAdicionar nova musica ([0]SIM [1]NAO): ");
+						scanf("%d", &stop);
+					} while (stop != 1);
 					break;
 				}
 
@@ -143,10 +159,9 @@ int main() {
 					ShowQueue(fila);
 					break;
 				case 3:
-					
+					ImprimeStack(pilha);
 					break;
 				}
-				
 				break;
 			case 5:
 				break;
