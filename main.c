@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "queue.h"
 #include "stack.h"
 #include "LSE.h"
@@ -8,6 +9,7 @@
 #include "spotyfom.h"
 
 int main() {
+	srandom(time(NULL));
     FILE *arquivo;
 	struct musica *musica = NULL;
 	struct nodo *novonodo = NULL;
@@ -97,12 +99,21 @@ int main() {
 
 				switch (selecao) {
 				case 'r':
-					int aleatorio = (int)random() % 5001;
+					int aleatorio, q;
 					struct nodo *nodoAux;
-					fila = CriaDescQueue(fila);
-					nodoAux = get(acervo, aleatorio);
-					nodoQueue = CriaNodoQueue(nodoAux->info);
-					enqueue(fila, nodoQueue);
+					printf("Quantidade de musicas: ");
+					scanf("%d", &q);
+					if (fila == NULL)
+					{
+						fila = CriaDescQueue(fila);
+					}
+					for (int i = 0; i < q; i++)
+					{
+						aleatorio = (int)random() % 5001;
+						nodoAux = get(acervo, aleatorio);
+						nodoQueue = CriaNodoQueue(nodoAux->info);
+						enqueue(fila, nodoQueue);
+					}
 					break;
 				case 'p':
 					

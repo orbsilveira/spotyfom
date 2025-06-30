@@ -166,13 +166,12 @@ void ImprimeMusicaQueue(struct desc_queue *descritor, int posicao) {
 			{
 				if (posicaoAux == posicao)
 				{
-					printf("\n====================================\n");
+					printf("\n**************************************");
 					printf("\nTitulo: %s\n", aux->info->titulo);
 					printf("Artista: %s\n", aux->info->artista);
 					printf("Letra: %s\n", aux->info->letra);
 					printf("Codigo: %d\n", aux->info->codigo);
 					printf("Execucoes: %d\n", aux->info->execucoes);
-					printf("\n====================================\n");
 					break;
 				}
 				aux = aux->prox;
