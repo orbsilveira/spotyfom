@@ -164,7 +164,21 @@ int main() {
 				}
 				break;
 			case 5:
-				salvarAcervo(acervo);
+				int num2;
+				printf("\nSalvar acervo [1]\nSalvar fila [2]\nSalvar pilha [3]\nSelecao: ");
+				scanf("%d", &num2);
+				switch (num2)
+				{
+				case 1:
+					salvarAcervo(acervo);
+					break;
+				case 2:
+					
+					break;
+				case 3:
+					
+					break;
+				}
 				break;
 			case 6:
 				printf("\n Tamanho do acervo: %d", tamanho(acervo));
