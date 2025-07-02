@@ -164,6 +164,7 @@ int main() {
 				}
 				break;
 			case 5:
+				salvarAcervo(acervo);
 				break;
 			case 6:
 				printf("\n Tamanho do acervo: %d", tamanho(acervo));

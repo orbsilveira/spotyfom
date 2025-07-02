@@ -173,3 +173,28 @@ struct musica *artista(struct desc_lista_encadeada *descritor) {
 		return aux->info;
 	}
 }
+
+// salvar acervo
+void salvarAcervo(struct desc_lista_encadeada *descritor) {
+    FILE *arquivo = fopen("acervo.txt", "w");
+    if (arquivo == NULL) {
+        perror("Erro ao abrir o arquivo para escrita");
+        return;
+    }
+
+    // Escrever a quantidade na primeira linha
+    fprintf(arquivo, "%d\n", descritor->tamanho);
+
+	struct nodo *aux = descritor->lista;
+    while (aux != NULL) {
+        fprintf(arquivo, "%s;%s;%s;%d;%d\n",
+                aux->info->titulo,
+                aux->info->artista,
+                aux->info->letra,
+                aux->info->codigo,
+                aux->info->execucoes);
+        aux = aux->prox;
+    }
+
+    fclose(arquivo);
+}
