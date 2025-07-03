@@ -56,7 +56,7 @@ int main() {
 			while (fgets(linha, sizeof(linha), arquivo) != NULL) {
         		struct musica nova_musica; // Cria uma struct temporária para preencher
 
-    			if (parse_linha_para_musica(linha, &nova_musica) == 0) {
+    			if (parseMusica(linha, &nova_musica) == 0) {
 					struct musica *m = malloc(sizeof(struct musica));
 					*m = nova_musica;
 					novonodo = CriaNodoLSE(m);

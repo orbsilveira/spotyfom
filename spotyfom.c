@@ -9,72 +9,46 @@
 
 /*====================================================================*/
 
-int parse_linha_para_musica(char *linha_do_arquivo, struct musica *musica_destino) {
+int parseMusica(char *linha_do_arquivo, struct musica *musica_destino) {
     if (linha_do_arquivo == NULL || musica_destino == NULL) {
         return -1; // Parâmetros inválidos
     }
 
-    // Cria uma cópia da linha, pois strtok modifica a string original
+    // Cria uma cópia da linha
     char *linha_copia = strdup(linha_do_arquivo);
-    if (linha_copia == NULL) {
-        perror("Erro ao alocar memória para cópia da linha");
-        return -1;
-    }
 
-    // Remove o caractere de nova linha, se houver
+    // Remove o caractere de nova linha
     linha_copia[strcspn(linha_copia, "\n")] = '\0';
 
     char *token;
 
-    // A ordem dos campos no arquivo é: artista;codigo;titulo;letra;execucoes
+    // ordem dos campos no arquivo é: artista;codigo;titulo;letra;execucoes
 
     // 1. Artista
     token = strtok(linha_copia, ";");
-    if (token == NULL) {
-        fprintf(stderr, "Erro de parsing.\n");
-        free(linha_copia);
-        return -1;
-    }
 	strncpy(musica_destino->artista, token, sizeof(musica_destino->artista) - 1);
     musica_destino->artista[sizeof(musica_destino->artista) - 1] = '\0';
 
     // 2. Código
     token = strtok(NULL, ";");
-    if (token == NULL) {
-        fprintf(stderr, "Erro de parsing: Código não encontrado.\n");
-        free(linha_copia);
-        return -1;
-    }
     musica_destino->codigo = atoi(token);
 
     // 3. Título
     token = strtok(NULL, ";");
-    if (token == NULL) {
-        fprintf(stderr, "Erro de parsing: Título não encontrado.\n");
-        free(linha_copia);
-        return -1;
-    }
-    // strncpy é mais seguro para evitar estouro de buffer
     strncpy(musica_destino->titulo, token, sizeof(musica_destino->titulo) - 1);
-    musica_destino->titulo[sizeof(musica_destino->titulo) - 1] = '\0'; // Garante null-termination
+    musica_destino->titulo[sizeof(musica_destino->titulo) - 1] = '\0';
 
     // 4. Letra
     token = strtok(NULL, ";");
-    if (token == NULL) {
-        fprintf(stderr, "Erro de parsing: Letra não encontrada.\n");
-        free(linha_copia);
-        return -1;
-    }
     strncpy(musica_destino->letra, token, sizeof(musica_destino->letra) - 1);
     musica_destino->letra[sizeof(musica_destino->letra) - 1] = '\0';
 	
 	// Execuções
 	musica_destino->execucoes = 0;
 
-    // Libera a memória alocada para a cópia da linha
     free(linha_copia);
 
-    return 0; // Sucesso
+    return 0;
 }
 
 struct musica *busca(struct desc_lista_encadeada *descritor) {
