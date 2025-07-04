@@ -10,66 +10,17 @@
 
 int main() {
 	srandom(time(NULL));
-    FILE *arquivo;
 	struct musica *musica = NULL;
-	struct nodo *novonodo = NULL;
 	struct nodo_queue *nodoQueue = NULL;
 	struct nodo_stack *nodoStack = NULL;
 	struct desc_lista_encadeada *acervo = NULL;
 	struct desc_queue *fila = NULL;
 	struct desc_stack *pilha = NULL;
-    char linha[1024]; // Buffer para ler cada linha do arquivo
-    int quantidade_musicas;
 	int op = 0;
 	
 	do {	
 		////////////////////////////////////////////////////////////////////////////////////////////////
-		if (acervo == NULL) {
-			acervo = CriaDescritorLSE();
-			char name[20];
-			printf("              ######### Carregar banco de dados #########\n");
-			printf("Digitar nome do arquivo com extensao (arquivo.txt) ou digitar 's' para sair: ");
-			scanf("%s", name);
-
-			if (strcmp(name, "s") == 0)
-			{
-				return 1;
-			}
-
-			arquivo = fopen(name, "r");
-    		if (arquivo == NULL) {
-    			perror("Erro ao abrir o arquivo");
-    			return 1;
-    		}
-
-    		if (fgets(linha, sizeof(linha), arquivo) != NULL) {
-        		quantidade_musicas = atoi(linha);
-    			printf("Quantidade total de músicas informada no arquivo: %d\n", quantidade_musicas);
-			} else {
-        		fprintf(stderr, "Erro ao ler a quantidade de músicas do arquivo.\n");
-    			fclose(arquivo);
-				return 1;
-			}
-
-			int musicas_lidas = 0;
-			int posicao = 0;
-			while (fgets(linha, sizeof(linha), arquivo) != NULL) {
-        		struct musica nova_musica; // Cria uma struct temporária para preencher
-
-    			if (parseMusica(linha, &nova_musica) == 0) {
-					struct musica *m = malloc(sizeof(struct musica));
-					*m = nova_musica;
-					novonodo = CriaNodoLSE(m);
-					insere(acervo, novonodo, posicao);
-           			//printf("Música processada: %s - %s\n", nova_musica.titulo, nova_musica.artista);
-           			musicas_lidas++;
-					posicao ++;
-       			} else {
-           			fprintf(stderr, "Skipping malformed line: %s\n", linha);
-       			}
-   			}
-			printf("\nTotal de músicas lidas e processadas: %d\n", musicas_lidas);
-		}
+		acervo = carregaAcervo(acervo);
 		////////////////////////////////////////////////////////////////////////////////////////////////			
 		printf("\n\n========== MENU SPOTYFOM ==========\n");
 		printf(" [0] Sair;\n");

@@ -9,7 +9,7 @@
 
 /*====================================================================*/
 
-int parseMusica(char *linha_do_arquivo, struct musica *musica_destino) {
+int parserNovoAcervo(char *linha_do_arquivo, struct musica *musica_destino) {
     if (linha_do_arquivo == NULL || musica_destino == NULL) {
         return -1; // Parâmetros inválidos
     }
@@ -45,6 +45,49 @@ int parseMusica(char *linha_do_arquivo, struct musica *musica_destino) {
 	
 	// Execuções
 	musica_destino->execucoes = 0;
+
+    free(linha_copia);
+
+    return 0;
+}
+
+int parserBackup(char *linha_do_arquivo, struct musica *musica_destino) {
+    if (linha_do_arquivo == NULL || musica_destino == NULL) {
+        return -1; // Parâmetros inválidos
+    }
+
+    // Cria uma cópia da linha
+    char *linha_copia = strdup(linha_do_arquivo);
+
+    // Remove o caractere de nova linha
+    linha_copia[strcspn(linha_copia, "\n")] = '\0';
+
+    char *token;
+
+    // ordem dos campos no arquivo é: artista;codigo;titulo;letra;execucoes
+
+    // 1. Artista
+    token = strtok(linha_copia, ";");
+	strncpy(musica_destino->artista, token, sizeof(musica_destino->artista) - 1);
+    musica_destino->artista[sizeof(musica_destino->artista) - 1] = '\0';
+
+    // 2. Código
+    token = strtok(NULL, ";");
+    musica_destino->codigo = atoi(token);
+
+    // 3. Título
+    token = strtok(NULL, ";");
+    strncpy(musica_destino->titulo, token, sizeof(musica_destino->titulo) - 1);
+    musica_destino->titulo[sizeof(musica_destino->titulo) - 1] = '\0';
+
+    // 4. Letra
+    token = strtok(NULL, ";");
+    strncpy(musica_destino->letra, token, sizeof(musica_destino->letra) - 1);
+    musica_destino->letra[sizeof(musica_destino->letra) - 1] = '\0';
+	
+	// 5. Execuções
+	token = strtok(NULL, ";");
+	musica_destino->execucoes = atoi(token);
 
     free(linha_copia);
 
@@ -161,14 +204,84 @@ void salvarAcervo(struct desc_lista_encadeada *descritor) {
 
 	struct nodo *aux = descritor->lista;
     while (aux != NULL) {
-        fprintf(arquivo, "%s;%s;%s;%d;%d\n",
-                aux->info->titulo,
-                aux->info->artista,
+        fprintf(arquivo, "%s;%d;%s;%s;%d;\n",
+              	aux->info->artista,
+				aux->info->codigo,
+				aux->info->titulo,
                 aux->info->letra,
-                aux->info->codigo,
                 aux->info->execucoes);
         aux = aux->prox;
     }
 
     fclose(arquivo);
+}
+
+struct desc_lista_encadeada *carregaAcervo(struct desc_lista_encadeada *acervo) {
+	if (acervo == NULL) {
+		struct nodo *novonodo = NULL;
+		char linha[256];
+    	int quantidade_musicas, op;
+		char name[20];
+		FILE *arquivo;
+
+		acervo = CriaDescritorLSE();
+
+		printf("              ######### Carregar banco de dados #########\n");
+		printf("[1] Carregar novo acervo\n[2] Carregar backup\n>>> Selecao: ");
+		scanf("%d", &op);
+		printf("Digitar nome do arquivo com extensao (arquivo.txt): ");
+		setbuf(stdin, NULL);
+		scanf("%s", name);
+
+		arquivo = fopen(name, "r");
+
+    	if (fgets(linha, sizeof(linha), arquivo) != NULL) {
+			quantidade_musicas = atoi(linha);
+    		printf("Quantidade total de músicas informada no arquivo: %d\n", quantidade_musicas);
+		} else {
+    		printf("Erro!");
+    		fclose(arquivo);
+		}
+
+		int musicas_lidas = 0;
+		int posicao = 0;
+
+		switch (op)
+		{
+			case 1:
+				while (fgets(linha, sizeof(linha), arquivo) != NULL) {
+					struct musica nova_musica;
+					if (parserNovoAcervo(linha, &nova_musica) == 0) {
+						struct musica *m = malloc(sizeof(struct musica));
+						*m = nova_musica;
+						novonodo = CriaNodoLSE(m);
+						insere(acervo, novonodo, posicao);
+        				musicas_lidas++;
+						posicao ++;
+       				} else {
+           				printf("Erro no parser!");
+    				}
+   				}
+				printf("\nTotal de músicas lidas: %d\n", musicas_lidas);
+				break;
+			case 2:
+				while (fgets(linha, sizeof(linha), arquivo) != NULL) {
+					struct musica nova_musica;
+					if (parserBackup(linha, &nova_musica) == 0) {
+						struct musica *m = malloc(sizeof(struct musica));
+						*m = nova_musica;
+						novonodo = CriaNodoLSE(m);
+						insere(acervo, novonodo, posicao);
+        				musicas_lidas++;
+						posicao ++;
+       				} else {
+           				printf("Erro no parser!");
+    				}
+   				}
+				printf("\nTotal de músicas lidas: %d\n", musicas_lidas);
+				break;
+		}
+		
+	}
+	return acervo;
 }
