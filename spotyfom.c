@@ -285,3 +285,31 @@ struct desc_lista_encadeada *carregaAcervo(struct desc_lista_encadeada *acervo) 
 	}
 	return acervo;
 }
+
+void execucao(struct desc_queue *fila, struct desc_stack *pilha) {
+	int op;
+	printf("[1] Playlist Aleatoria\n[2] Playlist Pessoal\n>>> Selecao: ");
+	scanf("%d", &op);
+	switch (op)
+	{
+	case 1:
+		struct nodo_queue *auxqueue = fila->head;
+		while (auxqueue != NULL)
+		{
+			auxqueue->info->execucoes ++;
+			dequeue(fila);
+			auxqueue = auxqueue->prox;
+		}
+		break;
+	
+	case 2:
+		struct nodo_stack *auxstack = pilha->topo;
+		while (auxstack != NULL)
+		{
+			auxstack->info->execucoes ++;
+			pop(pilha);
+			auxstack = auxstack->prox;
+		}
+		break;
+	}
+}

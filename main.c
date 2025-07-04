@@ -44,6 +44,7 @@ int main() {
 			switch (op)
 			{
 			case 1:
+				execucao(fila, pilha);
 				break;
 			case 2:
 				char selecao;
